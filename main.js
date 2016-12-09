@@ -1,4 +1,4 @@
-var canvas, context;
+  var canvas, context;
 var cells = [];
 var Cell = function() {
   this.isBomb = false;
@@ -31,6 +31,7 @@ var reset = () => {
     cells[i].isVisible = false;
     cells[i].isFlagged = false;
     cells[i].nearbyBombs = 0;
+    cellsLeft++;
   }
 
   // Set Bombs in grid randomly
@@ -274,22 +275,14 @@ window.onload = () => {
     let row = Math.floor(mouseY / CELL_HEIGHT);
     let i = (col + row * cellCols);
     
-    if (!cells[i].isVisible) {  // If cell is visible
+    if (!cells[i].isVisible && !cells[i].isFlagged) {  // If cell is and not flagged
       if (event.button === 0) { // left mouse button is pressed 
         if (cells[i].isBomb) {
          gameOver = true;
         }
         else {
           cells[i].isVisible = true;
-        }
-      }
-      else if (event.button === 2) {  // right mouse button is clicked
-        if (cells[i].isFlagged) { // toggle flag
-          cells[i].isFlagged = false;
-        }
-        else {
-          cells[i].isFlagged = true;
-
+          cellsLeft--;
         }   
       }
     }
@@ -303,6 +296,9 @@ var update = () => {
   if (gameOver) {
     reset();
     gameOver = false;
+  }
+  else if (cellsLeft === bombs) {
+    gameOver = true;
   }
 
   // Clear screen
